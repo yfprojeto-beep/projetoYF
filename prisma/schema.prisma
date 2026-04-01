@@ -1,0 +1,228 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String
+  roleId        String
+  role          Role      @relation(fields: [roleId], references: [id])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  processes      Process[]        @relation("UserProcesses")
+  processHistory ProcessHistory[]
+  audits         AuditLog[]
+}
+
+model Role {
+  id          String           @id @default(cuid())
+  name        String           @unique // SuperAdmin, Gerente, Analista, Tecnico, Financeiro, Comercial, RH, TI
+  permissions RolePermission[]
+  users       User[]
+}
+
+model Permission {
+  id          String           @id @default(cuid())
+  name        String           @unique // e.g., "process:create", "finance:view"
+  description String?
+  roles       RolePermission[]
+}
+
+model RolePermission {
+  role         Role       @relation(fields: [roleId], references: [id])
+  roleId       String
+  permission   Permission @relation(fields: [permissionId], references: [id])
+  permissionId String
+
+  @@id([roleId, permissionId])
+}
+
+model Process {
+  id              String         @id @default(cuid())
+  processNumber   String         @unique // Formato 202412.215.32
+  status          ProcessStatus  @relation(fields: [statusId], references: [id])
+  statusId        String
+  insured         String         // Segurado
+  insurer         String         // Seguradora
+  broker          String?        // Corretora
+  merchandise     String?        // Mercadoria
+  value           Decimal?       @db.Decimal(15, 2)
+  prejudice       Decimal?       @db.Decimal(15, 2) // Prejuízo
+  dateOpened      DateTime       @default(now())
+  dateDistributed DateTime?
+  assignedTo      User?          @relation("UserProcesses", fields: [userId], references: [id])
+  userId          String?
+  
+  // Relations to detail modules
+  details         ProcessDetail?
+  vistorias       Vistoria[]
+  midias          Midia[]
+  history         ProcessHistory[]
+  adiantamentos   Adiantamento[]
+  salvados        Salvado[]
+}
+
+model ProcessStatus {
+  id        String    @id @default(cuid())
+  name      String    @unique // Aberto, Em Andamento, Finalizado, Cancelado
+  processes Process[]
+}
+
+model ProcessDetail {
+  id                String  @id @default(cuid())
+  process           Process @relation(fields: [processId], references: [id])
+  processId         String  @unique
+  preliminaryReport String? @db.Text
+  eventDetails      String? @db.Text
+  analysis          String? @db.Text
+}
+
+model ProcessHistory {
+  id        String   @id @default(cuid())
+  process   Process  @relation(fields: [processId], references: [id])
+  processId String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  date      DateTime @default(now())
+  dept      String?
+  content   String   @db.Text
+  type      String   @default("MANUAL")
+}
+
+model Adiantamento {
+  id        String   @id @default(cuid())
+  process   Process  @relation(fields: [processId], references: [id])
+  processId String
+  value     Decimal  @db.Decimal(15, 2)
+  reason    String?  @db.Text
+  status    String   @default("PENDENTE")
+  createdAt DateTime @default(now())
+}
+
+model Vistoria {
+  id            String   @id @default(cuid())
+  process       Process  @relation(fields: [processId], references: [id])
+  processId     String
+  date          DateTime @default(now())
+  location      String?
+  findings      String?  @db.Text
+  status        String   @default("AGENDADO")
+  inspectorName String?
+  justification String?  @db.Text
+}
+
+model Midia {
+  id        String   @id @default(cuid())
+  process   Process  @relation(fields: [processId], references: [id])
+  processId String
+  url       String
+  type      String   // Image, PDF, etc.
+  createdAt DateTime @default(now())
+}
+
+model Salvado {
+  id              String         @id @default(cuid())
+  process         Process        @relation(fields: [processId], references: [id])
+  processId       String
+  lotNumber       String         @unique
+  dateSent        DateTime       @default(now())
+  storageLocation String?
+  status          String         @default("RECEBIDO")
+  merchandise     String?
+  quantity        String?
+  damageDesc      String?        @db.Text
+  sender          String?
+  receiver        String?
+
+  propostas       SalvadoProposta[]
+  movimentacoes   SalvadoMovimentacao[]
+  anexos          SalvadoAnexo[]
+}
+
+model SalvadoProposta {
+  id        String   @id @default(cuid())
+  salvado   Salvado  @relation(fields: [salvadoId], references: [id])
+  salvadoId String
+  bidder    String
+  value     Decimal  @db.Decimal(15, 2)
+  date      DateTime @default(now())
+  status    String   @default("PENDENTE")
+}
+
+model SalvadoMovimentacao {
+  id          String   @id @default(cuid())
+  salvado     Salvado  @relation(fields: [salvadoId], references: [id])
+  salvadoId   String
+  description String
+  date        DateTime @default(now())
+  user        String
+}
+
+model SalvadoAnexo {
+  id        String   @id @default(cuid())
+  salvado   Salvado  @relation(fields: [salvadoId], references: [id])
+  salvadoId String
+  url       String
+  type      String
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  action    String   // CREATE, UPDATE, DELETE
+  entity    String   // table name
+  entityId  String
+  details   Json?
+  createdAt DateTime @default(now())
+}
+
+// ==========================================
+// MÓDULO DE CADASTROS (MASTER DATA)
+// ==========================================
+
+model VistoriadorProfissional {
+  id        String   @id @default(cuid())
+  name      String
+  document  String   @unique // CPF/CNPJ
+  email     String?
+  phone     String?
+  region    String?  // Ex: São Paulo/SP
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model Seguradora {
+  id        String   @id @default(cuid())
+  name      String
+  document  String   @unique // CNPJ
+  email     String?
+  phone     String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+// ==========================================
+// MÓDULO FINANCEIRO
+// ==========================================
+
+model FinancialTransaction {
+  id            String   @id @default(cuid())
+  type          String   // RECEITA, DESPESA
+  amount        Decimal  @db.Decimal(15, 2)
+  description   String
+  status        String   @default("PENDENTE") // PENDENTE, PAGO, ATRASADO, CANCELADO
+  dueDate       DateTime
+  paidDate      DateTime?
+  referenceId   String?  // Id do Adiantamento ou SalvadoProposta
+  referenceType String?  // Ex: "ADIANTAMENTO", "SALVADO_VENDA"
+  createdAt     DateTime @default(now())
+}
