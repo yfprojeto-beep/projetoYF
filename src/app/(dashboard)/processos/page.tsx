@@ -88,10 +88,10 @@ export default function ProcessosPage() {
                 <th>AÇÕES</th>
               </tr>
             </thead>
-            <tbody>
-              {loading ? (
-                <tr><td colSpan="8" className="text-center p-4">Carregando processos...</td></tr>
-              ) : (
+             <tbody>
+               {loading ? (
+                 <tr><td colSpan={8} className="text-center p-4">Carregando processos...</td></tr>
+               ) : (
                 processes.map((p) => (
                   <tr key={p.id}>
                     <td className="font-bold text-red">
@@ -102,7 +102,7 @@ export default function ProcessosPage() {
                     <td>{p.insured}</td>
                     <td>{p.insurer}</td>
                     <td>
-                      <span className="status-badge">{p.status?.name || p.status}</span>
+                      <span className="status-badge">{typeof p.status === 'string' ? p.status : p.status?.name}</span>
                     </td>
                     <td>{p.type || "Vistoria"}</td>
                     <td>

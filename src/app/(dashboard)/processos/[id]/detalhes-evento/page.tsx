@@ -93,9 +93,9 @@ export default function DetalhesEventoPage({ params }: { params: { id: string } 
                </tr>
              </thead>
              <tbody>
-               {history.length === 0 ? (
-                 <tr><td colSpan="4" className="text-center p-8 text-muted">Nenhum registro encontrado.</td></tr>
-               ) : (
+                {history.length === 0 ? (
+                  <tr><td colSpan={4} className="text-center p-8 text-muted">Nenhum registro encontrado.</td></tr>
+                ) : (
                  history.map(item => (
                    <tr key={item.id}>
                      <td className="font-bold">{item.type}</td>

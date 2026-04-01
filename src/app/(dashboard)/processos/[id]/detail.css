@@ -1,0 +1,17 @@
+/* Detail Page Styles */
+.detail-container {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+.detail-content {
+  flex: 1;
+}
+
+.detail-drawer {
+  width: 300px;
+  background: #f3f4f6;
+  padding: 20px;
+  border-radius: 8px;
+}

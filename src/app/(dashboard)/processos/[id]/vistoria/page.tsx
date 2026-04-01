@@ -57,10 +57,10 @@ export default function VistoriaPage({ params }: { params: { id: string } }) {
                 <th style={{ width: "10%" }}>AÇÕES</th>
               </tr>
             </thead>
-            <tbody>
-              {vistorias.length === 0 ? (
-                <tr><td colSpan="6" className="text-center p-8 text-muted">Nenhum acionamento realizado até o momento.</td></tr>
-              ) : (
+             <tbody>
+               {vistorias.length === 0 ? (
+                 <tr><td colSpan={6} className="text-center p-8 text-muted">Nenhum acionamento realizado até o momento.</td></tr>
+               ) : (
                 vistorias.map(v => (
                   <tr key={v.id}>
                     <td className="font-bold text-red">{v.id}</td>
