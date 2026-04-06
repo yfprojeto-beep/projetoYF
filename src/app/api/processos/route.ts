@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server"
+import { NextResponse, NextRequest } from "next/server"
 import { db } from "@/lib/db"
 import { ProcessSchema } from "@/lib/validations"
 import { auth } from "@/auth"
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const search = searchParams.get("search") || ""

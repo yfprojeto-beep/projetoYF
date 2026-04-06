@@ -1,14 +1,15 @@
-import { NextResponse } from "next/server"
+import { NextResponse, NextRequest } from "next/server"
 import { db } from "@/lib/db"
 import { auth } from "@/auth"
 
 export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const salvado = await db.salvado.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         process: true,
         propostas: true,
@@ -35,10 +36,11 @@ export async function GET(
 }
 
 export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await auth()
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -50,7 +52,7 @@ export async function PUT(
     const body = await request.json()
 
     const salvado = await db.salvado.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         status: body.status,
         storageLocation: body.storageLocation,
@@ -79,10 +81,11 @@ export async function PUT(
 }
 
 export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await auth()
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -92,7 +95,7 @@ export async function DELETE(
     }
 
     const salvado = await db.salvado.delete({
-      where: { id: params.id },
+      where: { id },
     })
 
     return NextResponse.json({ success: true, salvado })

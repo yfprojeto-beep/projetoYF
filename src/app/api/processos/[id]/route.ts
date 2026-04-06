@@ -1,14 +1,15 @@
-import { NextResponse } from "next/server"
+import { NextResponse, NextRequest } from "next/server"
 import { db } from "@/lib/db"
 import { auth } from "@/auth"
 
 export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const process = await db.process.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         status: true,
         assignedTo: { select: { id: true, name: true, email: true } },
@@ -42,10 +43,11 @@ export async function GET(
 }
 
 export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await auth()
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -58,7 +60,7 @@ export async function PUT(
 
     // Check if process exists
     const existingProcess = await db.process.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!existingProcess) {
@@ -69,7 +71,7 @@ export async function PUT(
     }
 
     const updatedProcess = await db.process.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         statusId: body.statusId,
         userId: body.userId,
@@ -92,10 +94,11 @@ export async function PUT(
 }
 
 export async function DELETE(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await auth()
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -105,7 +108,7 @@ export async function DELETE(
     }
 
     const process = await db.process.delete({
-      where: { id: params.id },
+      where: { id },
     })
 
     return NextResponse.json({ success: true, process })

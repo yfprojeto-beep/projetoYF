@@ -1,17 +1,18 @@
-import { NextResponse } from "next/server"
+import { NextResponse, NextRequest } from "next/server"
 import { db } from "@/lib/db"
 import { auth } from "@/auth"
 
 export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const { searchParams } = new URL(request.url)
     const filterDept = searchParams.get("dept")
     const filterDate = searchParams.get("date") // YYYY-MM-DD format
 
-    let whereClause: any = { processId: params.id }
+    let whereClause: any = { processId: id }
 
     if (filterDept && filterDept !== "Todos") {
       whereClause.dept = filterDept
@@ -59,10 +60,11 @@ export async function GET(
 }
 
 export async function POST(
-  request: Request,
-  { params }: { params: { id: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const session = await auth()
     if (!session?.user?.id) {
       return NextResponse.json(
@@ -76,7 +78,7 @@ export async function POST(
 
     // Check if process exists
     const process = await db.process.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!process) {
@@ -88,7 +90,7 @@ export async function POST(
 
     const newEntry = await db.processHistory.create({
       data: {
-        processId: params.id,
+        processId: id,
         content,
         dept: dept || "Operacional",
         userId: session.user.id,
