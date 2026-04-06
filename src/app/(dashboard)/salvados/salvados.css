@@ -1,0 +1,33 @@
+/* Salvados Page Styles */
+.salvados-container {
+  padding: 20px;
+}
+
+.salvados-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.salvados-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.salvados-table th,
+.salvados-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.salvados-table th {
+  background-color: #f3f4f6;
+  font-weight: 600;
+}
+
+.salvados-table tr:hover {
+  background-color: #f9fafb;
+}
