@@ -1,0 +1,38 @@
+services:
+  - type: web
+    name: projeto-yf-api
+    runtime: node
+    plan: standard # ou free se quiser teste
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: neondb
+          property: connectionString
+      - key: NEXTAUTH_SECRET
+        generateValue: true
+      - key: NEXTAUTH_URL
+        fromService:
+          name: projeto-yf-api
+          type: web
+          property: renderUrl
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: CLOUDINARY_UPLOAD_PRESET
+        sync: false
+      - key: LOG_LEVEL
+        value: info
+    healthCheckPath: /
+
+databases:
+  - name: neondb
+    plan: standard
+    # Deixe em branco - você já tem database no Neon
+    # Render pode conectar com DATABASE_URL
