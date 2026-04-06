@@ -1,0 +1,142 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║                   RENDER DEPLOYMENT - QUICK START                        ║
+║                                                                          ║
+║  Infraestrutura: Vercel (Frontend) + Render (Backend) + Neon (DB)       ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📋 PASSOS (5-10 MINUTOS):
+
+  1️⃣  Acesse https://render.com
+      → Sign up com GitHub
+      → Autorizar acesso ao repositório
+
+  2️⃣  Clique em: New Web Service
+      → Selecione: yfprojeto-beep/projetoYF
+      → Branch: master
+
+  3️⃣  Configure:
+      Name: projeto-yf-api
+      Build: npm ci && npm run build
+      Start: npm start
+      Region: São Paulo (sa-east-1)
+
+  4️⃣  Adicione Variáveis (copie do RENDER_ENV_VARS.md):
+      
+      PUBLIC:
+      ├─ NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME = dap4gy4pa
+      └─ NEXT_PUBLIC_API_URL = https://projeto-yf-api.onrender.com
+
+      PRIVATE:
+      ├─ NODE_ENV = production
+      ├─ NEXTAUTH_SECRET = xK9pL3mN8qR2vW5xY7zA0bC4dE6fG7hI9jK1lM3nO5pQ7
+      ├─ NEXTAUTH_URL = https://projeto-yf-api.onrender.com
+      ├─ DATABASE_URL = (copiar do Neon)
+      ├─ CLOUDINARY_API_KEY = 714389839699964
+      ├─ CLOUDINARY_API_SECRET = -wJ4nPZ_wgOk9L9iFPBmpdKYcIw
+      └─ CLOUDINARY_UPLOAD_PRESET = seu_preset
+
+  5️⃣  Clique: Create Web Service
+      ⏳ Aguarde 3-5 minutos
+
+  6️⃣  Teste:
+      https://projeto-yf-api.onrender.com/login
+      (Deve carregar a página de login)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🧪 VALIDAÇÃO:
+
+  Terminal:
+  
+  curl https://projeto-yf-api.onrender.com/login
+  curl https://projeto-yf-api.onrender.com/api/processos
+
+  Browser Console (F12):
+  
+  fetch('https://projeto-yf-api.onrender.com/api/processos')
+    .then(r => r.json())
+    .then(console.log)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📚 DOCUMENTAÇÃO:
+
+  Guia Completo:
+  → READ: RENDER_SETUP.md
+
+  Variáveis:
+  → COPY: RENDER_ENV_VARS.md
+
+  Visão Geral:
+  → START_HERE.md
+
+  Migração de Railway:
+  → RAILWAY_TO_RENDER.md
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+❌ ERRO? SIGA:
+
+  Build Failed
+  → Vê logs do Render
+  → Procure por TypeScript Error
+
+  502 Bad Gateway
+  → Render ainda iniciando
+  → Aguarde 1-2 minutos
+
+  Database Error
+  → Verifique DATABASE_URL
+  → Verifique IP no Neon
+
+  CORS Error
+  → Adicione no Vercel: NEXT_PUBLIC_API_URL
+  → Redeploy Vercel
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ DEPOIS DO DEPLOY:
+
+  1. Atualize Vercel com:
+     NEXT_PUBLIC_API_URL = https://projeto-yf-api.onrender.com
+
+  2. Teste login:
+     https://seu-frontend.vercel.app/login
+     Email: admin@projetoyf.com
+     Senha: admin123
+
+  3. Teste APIs:
+     - Lista processos
+     - Criar novo processo
+     - Fazer upload de arquivo
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 ARQUITETURA FINAL:
+
+  Frontend                Backend                 Database
+  
+  Vercel          →       Render        →        Neon
+  React UI                NextAuth              PostgreSQL
+  Login Page              APIs                  Prisma
+  Dashboards             Auth Server           
+
+                              ↓
+                         Cloudinary
+                         File Storage
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⏱️  TEMPO TOTAL: 15-20 minutos
+
+✅ COMMITS:
+   abd9e2c - Render deployment documentation
+   d672eec - Render configuration files
+   d6d2052 - NextAuth type fix
+   6724048 - TypeScript fixes
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🚀 VÁ: https://render.com
