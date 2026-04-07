@@ -1,10 +1,8 @@
 services:
   - type: web
     name: projeto-yf-api
-    runtime: node
+    runtime: docker
     plan: standard
-    buildCommand: npm ci --legacy-peer-deps
-    startCommand: bash start.sh
     envVars:
       - key: NODE_ENV
         value: production
