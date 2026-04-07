@@ -4,7 +4,7 @@ services:
     runtime: node
     plan: standard
     buildCommand: npm ci --legacy-peer-deps
-    startCommand: npm run prod
+    startCommand: bash start.sh
     envVars:
       - key: NODE_ENV
         value: production
