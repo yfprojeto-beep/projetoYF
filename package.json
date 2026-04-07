@@ -11,12 +11,14 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.5.1",
+    "@prisma/client": "^5.22.0",
     "bcryptjs": "^2.4.3",
     "clsx": "^2.1.1",
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.7.0",
     "next": "16.2.1",
     "next-auth": "^5.0.0-beta.23",
+    "prisma": "^5.22.0",
     "quill-paste-smart": "^2.0.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
@@ -25,14 +27,12 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@prisma/client": "^5.22.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.1",
-    "prisma": "^5.22.0",
     "tsx": "^4.17.0",
     "typescript": "^5"
   }
