@@ -2,8 +2,8 @@ services:
   - type: web
     name: projeto-yf-api
     runtime: node
-    plan: standard # ou free se quiser teste
-    buildCommand: npm ci && npm run build
+    plan: standard
+    buildCommand: npm ci --legacy-peer-deps && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_ENV
@@ -30,9 +30,8 @@ services:
       - key: LOG_LEVEL
         value: info
     healthCheckPath: /
+    numInstances: 1
 
 databases:
   - name: neondb
     plan: standard
-    # Deixe em branco - você já tem database no Neon
-    # Render pode conectar com DATABASE_URL
